@@ -35,9 +35,12 @@ var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
-addressPoints = addressPoints.map(function (p) { return [p[0], p[1]]; });
+addressPoints = addressPoints.map(function (p) { return [p[0], p[1], 1, Math.floor(Math.random() * 3) - 1]; });
 
-var heat = L.heatLayer(addressPoints).addTo(map),
+var heat = L.heatLayer(addressPoints, {
+    blendMode: 'soft-light',
+    radius: 40,
+}).addTo(map),
     draw = true;
 
 map.on({
@@ -45,7 +48,7 @@ map.on({
     moveend:   function () { draw = true; },
     mousemove: function (e) {
         if (draw) {
-            heat.addLatLng(e.latlng);
+            heat.addLatLng([e.latlng.lat, e.latlng.lng, 1, Math.floor(Math.random() * 3) - 1]);
         }
     }
 })

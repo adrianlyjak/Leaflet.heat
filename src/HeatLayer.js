@@ -132,7 +132,8 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
         // console.time('process');
         for (i = 0, len = this._latlngs.length; i < len; i++) {
-            p = this._map.latLngToContainerPoint(this._latlngs[i]);
+            var ll = this._latlngs[i]
+            p = this._map.latLngToContainerPoint(typeof ll === 'array' ? ll.slice(0,2) : ll);
             if (bounds.contains(p)) {
                 x = Math.floor((p.x - offsetX) / cellSize) + 2;
                 y = Math.floor((p.y - offsetY) / cellSize) + 2;

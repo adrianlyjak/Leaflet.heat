@@ -55,32 +55,6 @@ Unless `max` option is specified, intensity should range between `0.0` and `1.0`
 
 ## Changelog
 
-### 0.2.0 &mdash; Oct 26, 2015
-
-- Fixed intensity to work properly with `max` option.
-- Fixed zoom animation on Leaflet 1.0 beta 2.
-- Fixed tiles and point intensity in demos.
-
-#### 0.1.3 &mdash; Nov 25, 2015
-
-- Fixed some edge cases when handling point intensity.
-- Added `minOpacity` option.
-
-#### 0.1.2 &mdash; Nov 5, 2014
-
-- Added compatibility with Leaflet 0.8-dev.
-
-#### 0.1.1 &mdash; Apr 22, 2014
-
-- Fixed overlaying two heatmaps on top of each other.
-- Fixed rare animation issues.
-
-#### 0.1.0 &mdash; Feb 3, 2014
-
-- Added `addLatLng`, `setLatlngs`, `setOptions` and `redraw` methods.
-- Added `max` option and support for different point intensity values (through `LatLng` third argument).
-- Added `gradient` option to customize colors.
-
-#### 0.0.1 &mdash; Jan 31, 2014
+#### 0.1.1 &mdash; April 18, 2017
 
 - Initial release.

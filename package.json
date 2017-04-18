@@ -1,6 +1,6 @@
 {
   "name": "leaflet.sentimentheat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Leaflet heatmap plugin.",
   "homepage": "https://github.com/adrianlyjak/Leaflet.heat",
   "keywords": [

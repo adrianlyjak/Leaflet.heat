@@ -251,7 +251,7 @@ function gray(v) {
 }
 
 simpleheat.defaultOptions = {
-    alphaBurn: false,
+    alphaBurn: true,
     max: 1,
     radius: 25,
     blur: 25,

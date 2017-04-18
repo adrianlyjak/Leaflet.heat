@@ -20,7 +20,7 @@
   "devDependencies": {
     "eslint": "^1.7.3",
     "eslint-config-mourner": "^1.0.1",
-    "uglify-js": "^2.5.0",
+    "uglify-js": "^2.5.0"
   },
   "eslintConfig": {
     "extends": "mourner",

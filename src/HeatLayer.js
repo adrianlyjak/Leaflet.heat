@@ -1,18 +1,11 @@
 'use strict';
 
-L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
-
-    // options: {
-    //     minOpacity: 0.05,
-    //     maxZoom: 18,
-    //     radius: 25,
-    //     blur: 15,
-    //     max: 1.0
-    // },
+L.SentimentHeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
     initialize: function (latlngs, options) {
         this._latlngs = latlngs;
-        L.setOptions(this, options);
+        this._autoMax = undefined;
+        L.setOptions(this, Object.assign({}, simpleheat.defaultOptions, options));
     },
 
     setLatLngs: function (latlngs) {
@@ -27,9 +20,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
     setOptions: function (options) {
         L.setOptions(this, options);
-        if (this._heat) {
-            this._updateOptions();
-        }
+        if (this._heat) this._updateOptions();
         return this.redraw();
     },
 
@@ -49,7 +40,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
         if (this.options.pane) {
             this.getPane().appendChild(this._canvas);
-        }else{
+        } else {
             map._panes.overlayPane.appendChild(this._canvas);
         }
 
@@ -65,7 +56,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
     onRemove: function (map) {
         if (this.options.pane) {
             this.getPane().removeChild(this._canvas);
-        }else{
+        } else {
             map.getPanes().overlayPane.removeChild(this._canvas);
         }
 
@@ -96,17 +87,11 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
         this._heat = simpleheat(canvas);
         this._updateOptions();
+        this.redraw();
     },
 
     _updateOptions: function () {
-        this._heat.radius(this.options.radius || this._heat.defaultRadius, this.options.blur);
-
-        if (this.options.gradient) {
-            this._heat.gradient(this.options.gradient);
-        }
-        if (this.options.max) {
-            this._heat.max(this.options.max);
-        }
+        this._heat.setOptions(this.options)
     },
 
     _reset: function () {
@@ -144,11 +129,13 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
             panePos = this._map._getMapPanePos(),
             offsetX = panePos.x % cellSize,
             offsetY = panePos.y % cellSize,
-            i, len, p, cell, x, y, j, len2, k;
+            i, len, p, cell, x, y, j, len2, k, layer;
 
+        var max = 1;
         // console.time('process');
         for (i = 0, len = this._latlngs.length; i < len; i++) {
-            p = this._map.latLngToContainerPoint(this._latlngs[i]);
+            var ll = this._latlngs[i]
+            p = this._map.latLngToContainerPoint(ll.slice ? ll.slice(0,2) : ll);
             if (bounds.contains(p)) {
                 x = Math.floor((p.x - offsetX) / cellSize) + 2;
                 y = Math.floor((p.y - offsetY) / cellSize) + 2;
@@ -156,38 +143,49 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
                 var alt =
                     this._latlngs[i].alt !== undefined ? this._latlngs[i].alt :
                     this._latlngs[i][2] !== undefined ? +this._latlngs[i][2] : 1;
+                layer = (this._latlngs[i][3] === undefined ? 1 : this._latlngs[i][3]) + 1;
                 k = alt * v;
 
                 grid[y] = grid[y] || [];
-                cell = grid[y][x];
+                grid[y][x] = grid[y][x] || [];
+                cell = grid[y][x][layer];
 
                 if (!cell) {
-                    grid[y][x] = [p.x, p.y, k];
-
+                    grid[y][x][layer] = [p.x, p.y, k, layer];
+                    max = Math.max(max, k)
                 } else {
                     cell[0] = (cell[0] * cell[2] + p.x * k) / (cell[2] + k); // x
                     cell[1] = (cell[1] * cell[2] + p.y * k) / (cell[2] + k); // y
                     cell[2] += k; // cumulated intensity value
+                    max = Math.max(max, cell[2])
                 }
             }
         }
 
-        for (i = 0, len = grid.length; i < len; i++) {
+        if (this.options.autoMax && this._heat.getOptions().max != max) {
+            this._heat.setOptions({ max: max })
+        }
+
+        for (var i = 0, len = grid.length; i < len; i++) {
             if (grid[i]) {
-                for (j = 0, len2 = grid[i].length; j < len2; j++) {
-                    cell = grid[i][j];
-                    if (cell) {
-                        data.push([
-                            Math.round(cell[0]),
-                            Math.round(cell[1]),
-                            Math.min(cell[2], max)
-                        ]);
+                for (var j = 0, len2 = grid[i].length; j < len2; j++) {
+                    if (grid[i][j]) {
+                        for (var k = 0, len3 = grid[i][j].length; k < len3; k++) {
+                            cell = grid[i][j][k];
+                            if (cell) {
+                                data.push([
+                                    Math.round(cell[0]),
+                                    Math.round(cell[1]),
+                                    Math.min(cell[2], max),
+                                    cell[3] - 1
+                                ]);
+                            }
+                        }
                     }
                 }
             }
         }
         // console.timeEnd('process');
-
         // console.time('draw ' + data.length);
         this._heat.data(data).draw(this.options.minOpacity);
         // console.timeEnd('draw ' + data.length);
@@ -208,6 +206,6 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
     }
 });
 
-L.heatLayer = function (latlngs, options) {
-    return new L.HeatLayer(latlngs, options);
+L.sentimentHeatLayer = function (latlngs, options) {
+    return new L.SentimentHeatLayer(latlngs, options);
 };

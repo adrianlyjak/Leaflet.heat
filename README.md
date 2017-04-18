@@ -1,23 +1,15 @@
 Leaflet.heat
 ==========
 
-A tiny, simple and fast [Leaflet](http://leafletjs.com) heatmap plugin.
-Uses [simpleheat](https://github.com/mourner/simpleheat) under the hood,
-additionally clustering points into a grid for performance.
-
-
-## Demos
-
-- [10,000 points &rarr;](http://leaflet.github.io/Leaflet.heat/demo)
-- [Adding points dynamically &rarr;](http://leaflet.github.io/Leaflet.heat/demo/draw.html)
-
+A fork of [Leaflet.heat](http://leaflet.github.io/Leaflet.heat/demo) that allows for an additional field for positive and negative values, for e.g. a sentiment heatmap
 
 ## Basic Usage
 
 ```js
 var heat = L.heatLayer([
-	[50.5, 30.5, 0.2], // lat, lng, intensity
-	[50.6, 30.4, 0.5],
+	[50.5, 30.5, 0.2, 1], // lat, lng, intensity, layer (1 for positive, 0 for neutral, -1 for negative)
+	[50.6, 30.4, 0.5, 0],
+	[50.7, 30.3, 0.3, -1],
 	...
 ], {radius: 25}).addTo(map);
 ```
@@ -45,6 +37,7 @@ Constructs a heatmap layer given an array of points and an object with the follo
 - **radius** - radius of each "point" of the heatmap, `25` by default
 - **blur** - amount of blur, `15` by default
 - **gradient** - color gradient config, e.g. `{0.4: 'blue', 0.65: 'lime', 1: 'red'}`
+- **autoMax** - automatically compute the max value based on the current map frame
 
 Each point in the input array can be either an array like `[50.5, 30.5, 0.5]`,
 or a [Leaflet LatLng object](http://leafletjs.com/reference.html#latlng).
@@ -91,4 +84,3 @@ Unless `max` option is specified, intensity should range between `0.0` and `1.0`
 #### 0.0.1 &mdash; Jan 31, 2014
 
 - Initial release.
-

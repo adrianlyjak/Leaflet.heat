@@ -1,8 +1,8 @@
 {
-  "name": "leaflet.heat",
+  "name": "leaflet.sentimentheat",
   "version": "0.2.0",
-  "description": "A tiny and fast Leaflet heatmap plugin.",
-  "homepage": "https://github.com/Leaflet/Leaflet.heat",
+  "description": "A Leaflet heatmap plugin.",
+  "homepage": "https://github.com/adrianlyjak/Leaflet.heat",
   "keywords": [
     "heatmap",
     "canvas",
@@ -11,7 +11,7 @@
     "leaflet",
     "plugin"
   ],
-  "author": "Vladimir Agafonkin",
+  "author": "Adrian Lyjak",
   "repository": {
     "type": "git",
     "url": "git://github.com/Leaflet/Leaflet.heat.git"
@@ -20,7 +20,6 @@
   "devDependencies": {
     "eslint": "^1.7.3",
     "eslint-config-mourner": "^1.0.1",
-    "simpleheat": "~0.2.0",
     "uglify-js": "^2.5.0"
   },
   "eslintConfig": {
@@ -32,7 +31,7 @@
   },
   "scripts": {
     "test": "eslint src",
-    "prepublish": "uglifyjs node_modules/simpleheat/simpleheat.js src/HeatLayer.js -c -m -o dist/leaflet-heat.js"
+    "prepublish": "uglifyjs src/simpleheat.js src/HeatLayer.js -c -m --source-map dist/leaflet-heat.js.map --source-map-include-sources -o dist/leaflet-heat.js"
   },
   "license": "BSD-2-Clause",
   "jshintConfig": {

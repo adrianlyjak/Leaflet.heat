@@ -229,7 +229,7 @@ simpleheat.prototype = {
                             grayscale = Math.round(127 - (offset * keepRatio))
                         }
                     }
-                    var j = grayscale * 4; 
+                    var j = grayscale * 4;
                     pixels[i] = gradient[j];
                     pixels[i + 1] = gradient[j + 1];
                     pixels[i + 2] = gradient[j + 2];

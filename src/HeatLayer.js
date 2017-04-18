@@ -1,6 +1,6 @@
 'use strict';
 
-L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
+L.SentimentHeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
     initialize: function (latlngs, options) {
         this._latlngs = latlngs;
@@ -206,6 +206,6 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
     }
 });
 
-L.heatLayer = function (latlngs, options) {
-    return new L.HeatLayer(latlngs, options);
+L.sentimentHeatLayer = function (latlngs, options) {
+    return new L.SentimentHeatLayer(latlngs, options);
 };

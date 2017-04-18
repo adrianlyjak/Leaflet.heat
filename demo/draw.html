@@ -14,7 +14,7 @@
 <body>
 
 <p>
-    A dynamic demo of <a href="https://github.com/Leaflet/Leaflet.heat">Leaflet.heat</a>, a tiny and fast Leaflet heatmap plugin.
+    A dynamic demo of <a href="https://github.com/adrianlyjak/Leaflet.heat">Leaflet.sentimentHeat</a>, a Leaflet heatmap plugin.
     <iframe class="ghbtns" src="http://ghbtns.com/github-btn.html?user=Leaflet&amp;repo=Leaflet.heat&amp;type=watch&amp;count=true"
   allowtransparency="true" frameborder="0" scrolling="0" width="90" height="20"></iframe>
 </p>
@@ -38,7 +38,7 @@ var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 
 addressPoints = addressPoints.map(function (p) { return [p[0], p[1], 1, Math.floor(Math.random() * 3) - 1]; });
 
-var heat = L.heatLayer(addressPoints, {
+var heat = L.sentimentHeatLayer(addressPoints, {
     radius: 40,
     autoMax: true
 }).addTo(map),

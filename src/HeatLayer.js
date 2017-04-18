@@ -4,6 +4,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
     initialize: function (latlngs, options) {
         this._latlngs = latlngs;
+        this._autoMax = undefined;
         L.setOptions(this, Object.assign({}, simpleheat.defaultOptions, options));
     },
 
@@ -130,6 +131,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
             offsetY = panePos.y % cellSize,
             i, len, p, cell, x, y, j, len2, k, layer;
 
+        var max = 1;
         // console.time('process');
         for (i = 0, len = this._latlngs.length; i < len; i++) {
             var ll = this._latlngs[i]
@@ -150,13 +152,18 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
 
                 if (!cell) {
                     grid[y][x][layer] = [p.x, p.y, k, layer];
-
+                    max = Math.max(max, k)
                 } else {
                     cell[0] = (cell[0] * cell[2] + p.x * k) / (cell[2] + k); // x
                     cell[1] = (cell[1] * cell[2] + p.y * k) / (cell[2] + k); // y
                     cell[2] += k; // cumulated intensity value
+                    max = Math.max(max, cell[2])
                 }
             }
+        }
+
+        if (this.options.autoMax && this._heat.getOptions().max != max) {
+            this._heat.setOptions({ max: max })
         }
 
         for (var i = 0, len = grid.length; i < len; i++) {

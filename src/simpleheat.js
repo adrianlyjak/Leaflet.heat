@@ -212,15 +212,24 @@ simpleheat.prototype = {
 
     _colorize: function (pixels, gradient) {
         if (this._options.colorize) {
-            for (var i = 0, len = pixels.length, j; i < len; i += 4) {
-                var alpha = pixels[i + 3];
+            for (var i = 0, len = pixels.length; i < len; i += 4) {
+                var alpha = pixels[i + 3] / 256;
 
                 if (alpha) {
-                    j = pixels[i] * 4; // get gradient color from red value, (e.g. grayscale value)
+                    var gs = pixels[i] // get gradient color from red value, (e.g. grayscale value)
+                    if (this._options.alphaBurn) {
+                        // burn the gradient value towards the center of the gradient as the alpha is closer to 0
+                        if (gs > 127) {
+                            gs = Math.round(127 + ((gs - 127) * alpha))
+                        } else {
+                            gs = Math.round(127 - ((127 - gs) * alpha))
+                        }
+                    }
+                    var j = gs * 4; 
                     pixels[i] = gradient[j];
                     pixels[i + 1] = gradient[j + 1];
                     pixels[i + 2] = gradient[j + 2];
-                    pixels[i + 3] = Math.floor((gradient[j + 3] / 256) * (alpha / 256) * 256);
+                    pixels[i + 3] = Math.floor((gradient[j + 3] / 256) * (alpha) * 256);
                 }
             }
         }
@@ -242,6 +251,7 @@ function gray(v) {
 }
 
 simpleheat.defaultOptions = {
+    alphaBurn: false,
     max: 1,
     radius: 25,
     blur: 25,
